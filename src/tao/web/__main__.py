@@ -11,7 +11,7 @@ from sanic_session import Session, InMemorySessionInterface
 from tao.models import init_db
 from tao.common import DingdingProxy
 from tao.settings import API_WHITELIST
-from .api import gitlab_bp, dns_bp, common_bp, cci_bp, pci_bp, monitor_bp, auth_bp
+from .api import gitlab_bp, dns_bp, common_bp, cci_bp, pci_bp, monitor_bp, auth_bp, user_bp
 
 
 _www_build_path = os.path.join(os.path.dirname(__file__), 'www', 'build')
@@ -34,6 +34,7 @@ app.blueprint(common_bp)
 app.blueprint(cci_bp)
 app.blueprint(pci_bp)
 app.blueprint(monitor_bp)
+app.blueprint(user_bp)
 
 app.static('/static', _join('static'))
 app.static('/index.html', _join('index.html'))

@@ -72,6 +72,8 @@ pytest -s ./tst
 export PYTHONPATH=$PWD/src
 python3 -m tao.web
 nohup python3 -m tao.web &
+python3 -m tao.web
+python -m tao.web
 ```
 
 1. tao.web UI dev server

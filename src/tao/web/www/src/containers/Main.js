@@ -24,19 +24,19 @@ class Main extends React.Component {
   state = {version: undefined, user: {}, visibleRegister:false, visibleLogin:false}
 
   async componentWillMount() {
-    await axios.all([
-      axios.get('/api/v1/version'),
-      axios.get('/api/v1/user'),
-    ])
-    .then(axios.spread((versionResp, userResp) => {
-      this.setState({
-        version: versionResp.data.version,
-        user: {name: userResp.data.name, username: userResp.data.username}
-      })
-    }))
-    .catch(err => {
-      message.error('读取用户信息失败')
-    })
+    // await axios.all([
+    //   axios.get('/api/v1/version'),
+    //   axios.get('/api/v1/user'),
+    // ])
+    // .then(axios.spread((versionResp, userResp) => {
+    //   this.setState({
+    //     version: versionResp.data.version,
+    //     user: {name: userResp.data.name, username: userResp.data.username}
+    //   })
+    // }))
+    // .catch(err => {
+    //   message.error('读取用户信息失败')
+    // })
   }
   handleLoginOn = (e) => {
     this.setState({ visibleLogin:true})

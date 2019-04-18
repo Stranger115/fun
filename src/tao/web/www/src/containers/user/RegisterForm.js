@@ -1,15 +1,14 @@
 'use strict'
 
 import React from 'react'
-import {
-  Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete,
-} from 'antd';
+import {Form, Input, Tooltip, Icon, Select, Button, AutoComplete, message,Radio} from 'antd';
 import axios from "axios";
 
 import { tailFormItemLayout } from "../../constants"
 
 const { Option } = Select;
 const AutoCompleteOption = AutoComplete.Option;
+const RadioGroup = Radio.Group;
 
 class RegistrationForm extends React.Component {
   state = {
@@ -19,8 +18,16 @@ class RegistrationForm extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
+    this.props.form.validateFieldsAndScroll((error, values) => {
+      if (!error) {
+        axios.post('/api/v1/regedit', values)
+        .then(resp => {
+          message.success('注册成功')
+          this.props.setState({visibleRegister:false})
+        })
+        .catch(err => {
+          message.error(`注册失败：用户已存在`)
+        })
         console.log('Received values of form: ', values);
       }
     });
@@ -59,6 +66,7 @@ class RegistrationForm extends React.Component {
   }
 
   render() {
+
     const { getFieldDecorator } = this.props.form;
     const { autoCompleteResult } = this.state;
 
@@ -91,15 +99,15 @@ class RegistrationForm extends React.Component {
         <Form.Item
           label={(
             <span>
-              Nickname&nbsp;
-              <Tooltip title="What do you want others to call you?">
+              昵称&nbsp;
+              <Tooltip title="你想叫什么？">
                 <Icon type="question-circle-o" />
               </Tooltip>
             </span>
           )}
         >
-          {getFieldDecorator('昵称', {
-            rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }],
+          {getFieldDecorator('username', {
+            rules: [{ required: true, message: '请输入昵称!', whitespace: true }],
           })(
             <Input />
           )}
@@ -109,7 +117,7 @@ class RegistrationForm extends React.Component {
         >
           {getFieldDecorator('password', {
             rules: [{
-              required: true, message: 'Please input your password!',
+              required: true, message: '请输入密码!',
             }, {
               validator: this.validateToNextPassword,
             }],
@@ -122,7 +130,7 @@ class RegistrationForm extends React.Component {
         >
           {getFieldDecorator('confirm', {
             rules: [{
-              required: true, message: 'Please confirm your password!',
+              required: true, message: '请确认密码!',
             }, {
               validator: this.compareToFirstPassword,
             }],
@@ -130,8 +138,20 @@ class RegistrationForm extends React.Component {
             <Input type="password" onBlur={this.handleConfirmBlur} />
           )}
         </Form.Item>
+        <Form.Item label="性别">
+          {getFieldDecorator('sex', {
+            rules: [{
+              required: true, message: '请选择性别!',
+            }],
+          })(
+            <RadioGroup name="radiogroup" defaultValue={1}>
+              <Radio value={1}>女</Radio>
+              <Radio value={2}>男</Radio>
+            </RadioGroup>
+          )}
+        </Form.Item>
         <Form.Item {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">Register</Button>
+          <Button type="primary" htmlType="submit">注册</Button>
         </Form.Item>
       </Form>
     );
