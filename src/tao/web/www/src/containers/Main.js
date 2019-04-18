@@ -24,6 +24,7 @@ class Main extends React.Component {
   state = {version: undefined, user: {}, visibleRegister:false, visibleLogin:false}
 
   async componentWillMount() {
+    
     // await axios.all([
     //   axios.get('/api/v1/version'),
     //   axios.get('/api/v1/user'),
@@ -51,6 +52,9 @@ class Main extends React.Component {
     this.setState({ visibleRegister:false})
   }
 
+  handleRegisterSuccess = (e) => {
+    this.setState({ visibleRegister:false, visibleLogin:true})
+  }
   handleSubmitLogin = (e) => {
     axios.get('/api/v1/login')
       .then(() => {
@@ -61,6 +65,10 @@ class Main extends React.Component {
       .catch(err => {
         message.error('logout失败')
       })
+  }
+
+  handleLogin = (e, value) => {
+    this.setState({ user: value})
   }
   handleLogout = (e) => {
     axios.get('/api/v1/logout')
@@ -84,7 +92,18 @@ class Main extends React.Component {
                 </span>
     }
     else{
-      headers = null
+      headers =
+          <Dropdown overlay={
+            <Menu>
+              <Menu.Item key='logout'>
+                <a href='javascript:void(0)' onClick={this.handleLogout}>
+                  Logout
+                </a>
+              </Menu.Item>
+            </Menu>
+          }>
+            <a className="ant-dropdown-link" href="javascript:void(0)">{this.state.user.user_name}<Icon type="down" /></a>
+          </Dropdown>
     }
 
     return (
@@ -143,18 +162,6 @@ class Main extends React.Component {
             //   </span>
             // ))
           }
-          {/*<Divider type='vertical'/>*/}
-          {/*<Dropdown overlay={*/}
-          {/*  <Menu>*/}
-          {/*    <Menu.Item key='logout'>*/}
-          {/*      <a href='javascript:void(0)' onClick={this.handleLogout}>*/}
-          {/*        Logout*/}
-          {/*      </a>*/}
-          {/*    </Menu.Item>*/}
-          {/*  </Menu>*/}
-          {/*}>*/}
-          {/*  <a className="ant-dropdown-link" href="javascript:void(0)">{this.state.user.name || '未登录'}<Icon type="down" /></a>*/}
-          {/*</Dropdown>*/}
           </Header>
           <Modal
           title="注册"
@@ -164,7 +171,7 @@ class Main extends React.Component {
           onCancel={this.handleRegisterOut}
           footer={null}
           >
-          <RegistrationForm/>
+          <RegistrationForm onSubmit={this.handleRegisterSuccess}/>
           </Modal>
           <Modal
           title="登录"
@@ -173,7 +180,7 @@ class Main extends React.Component {
           onCancel={this.handleLoginOFF}
           footer={null}
           >
-          <LoginForm/>
+          <LoginForm onSubmit={this.handleLogin}/>
           </Modal>
           <Content className={styles.Content}>
             <Switch>

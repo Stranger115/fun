@@ -24,6 +24,7 @@ class LoginForm extends React.Component {
         axios.post('/api/v1/login', values)
         .then(() => {
           message.success('登录成功')
+          this.props.onSubmit(values)
           window.location = '/'
         })
         .catch(err => {

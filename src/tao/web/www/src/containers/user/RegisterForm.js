@@ -23,10 +23,10 @@ class RegistrationForm extends React.Component {
         axios.post('/api/v1/regedit', values)
         .then(resp => {
           message.success('注册成功')
-          this.props.handleRegisterOut()
+          this.props.onSubmit(values)
         })
         .catch(err => {
-          message.error(`注册失败：用户已存在`)
+          message.error(err)
         })
         console.log('Received values of form: ', values);
       }
