@@ -11,6 +11,12 @@ user_bp = Blueprint('users')
 md5 = hashlib.md5()
 
 
+def hash_psd(psd):
+    md5.update(psd.encode("utf8"))
+    secret = md5.hexdigest()
+    return secret
+
+
 @user_bp.post('/api/v1/regedit')
 async def regedit(request):
     """注册"""
@@ -21,8 +27,8 @@ async def regedit(request):
     try:
         result = await AllUser.find_one({'user_name': user_name})
         if not result:
-            md5.update(psd.encode("utf8"))
-            secret = md5.hexdigest()
+            secret = hash_psd(psd)
+            logging.info(secret)
             user = AllUser()
             user.user_name = user_name
             user.password = secret,
@@ -36,17 +42,19 @@ async def regedit(request):
         logging.info(e)
 
 
-
 @user_bp.post('/api/v1/login')
 async def login(request):
     """登录"""
-    user_name = request.json.get('name')
+    user_name = request.json.get('username')
     psd = request.json.get('password')
-    result = AllUser.find_one({'user_name': user_name})
+    result = await AllUser.find_one({'user_name': user_name})
     # 密码加密
-    if result['password'] == hashlib.md5(psd):
-        return json(jsonify({'success': '登录成功'}))
-    return json(jsonify({'error': '用户已存在'}))
+    if result:
+        if result['password'][0] == hash_psd(psd):
+            return json(jsonify({'success': '登录成功'}))
+        else:
+            raise InvalidUsage('密码或用户名错误')
+    raise InvalidUsage('用户不存在')
 
 
 @user_bp.post('api/v1/change_profile')

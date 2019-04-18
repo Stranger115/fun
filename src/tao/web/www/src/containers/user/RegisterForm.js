@@ -23,7 +23,7 @@ class RegistrationForm extends React.Component {
         axios.post('/api/v1/regedit', values)
         .then(resp => {
           message.success('注册成功')
-          this.props.setState({visibleRegister:false})
+          this.props.handleRegisterOut()
         })
         .catch(err => {
           message.error(`注册失败：用户已存在`)

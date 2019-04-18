@@ -10,21 +10,28 @@ import style from './index.css';
 
 class LoginForm extends React.Component {
 
+  handleRegister = (e) => {
+    e.preventDefault()
+    this.props.handleLoginOFF()
+    this.props.handleRegisterOn()
+   }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        axios.post('/api/v1/login', values)
+        .then(() => {
+          message.success('登录成功')
+          window.location = '/'
+        })
+        .catch(err => {
+          message.error('登录失败')
+          })
       }
-    axios.post('/api/v1/login')
-    .then(() => {
-      message.success('登录成功')
-      window.location = '/'
-      this.props.setState({ visibleLogin:false})
-    })
-    .catch(err => {
-      message.error('logout失败')
-    })
+
+
     });
   }
   render() {
@@ -32,15 +39,15 @@ class LoginForm extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit} className={style.login_form}>
         <Form.Item>
-          {getFieldDecorator('userName', {
-            rules: [{ required: true, message: 'Please input your username!' }],
+          {getFieldDecorator('username', {
+            rules: [{ required: true, message: '请输入你的昵称!' }],
           })(
             <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
           )}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('password', {
-            rules: [{ required: true, message: 'Please input your Password!' }],
+            rules: [{ required: true, message: '请输入你的密码!' }],
           })(
             <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
           )}
@@ -50,13 +57,13 @@ class LoginForm extends React.Component {
             valuePropName: 'checked',
             initialValue: true,
           })(
-            <Checkbox>Remember me</Checkbox>
+            <Checkbox>记住</Checkbox>
           )}
-          <a className= {style.login_form_forgot} href="">Forgot password</a>
+          <a className= {style.login_form_forgot} href="">忘记密码</a>
           <Button type="primary" htmlType="submit" className={style.login_form_button}>
-            Log in
+            登录
           </Button>
-          Or <a href="">register now!</a>
+          Or <a onClick={this.handleRegister}>注册!</a>
         </Form.Item>
       </Form>
     );
