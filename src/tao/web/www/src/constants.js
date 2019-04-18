@@ -26,6 +26,18 @@ const TwoColumnsFormItemLayout = {
     sm: { span: 16 },
   },
 }
+const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0,
+        },
+        sm: {
+          span: 16,
+          offset: 8,
+        },
+      },
+    };
 
 const ProductSessionKey = 'tao.product.id'
 const PageNumSessionKey= 'tao.page.num'
@@ -35,5 +47,6 @@ export {
   FormItemLayoutWithOutLabel,
   TwoColumnsFormItemLayout,
   ProductSessionKey,
-  PageNumSessionKey
+  PageNumSessionKey,
+  tailFormItemLayout
 }

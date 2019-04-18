@@ -158,6 +158,7 @@ class Main extends React.Component {
           </Header>
           <Modal
           title="注册"
+          width={340}
           visible={this.state.visibleRegister}
           onOk={this.handleOk}
           onCancel={this.handleRegisterOut}
@@ -167,6 +168,7 @@ class Main extends React.Component {
           </Modal>
           <Modal
           title="登录"
+          width={360}
           visible={this.state.visibleLogin}
           onCancel={this.handleLoginOFF}
           footer={null}
@@ -184,7 +186,7 @@ class Main extends React.Component {
             </Switch>
           </Content>
           <Footer className={styles.Footer}>
-            TAO<sup>{this.state.version || ''}</sup> ©2019 Created by DingXiang Inc.
+            fun<sup>{this.state.version || ''}</sup> ©2019 Created by QiuYing Xu.
           </Footer>
         </Layout>
       </Layout>
