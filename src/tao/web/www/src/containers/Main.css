@@ -1,0 +1,57 @@
+html {
+  height: calc(100% + 1px);
+}
+
+.Sider {
+  overflow-y: scroll;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  z-index: 2;
+}
+
+.Logo {
+  height: 60px;
+  padding-top: 10px;
+  padding-left: 25px;
+  opacity: 0.8;
+}
+
+.Container {
+  margin-left: 200px;
+  background: transparent;
+}
+
+.Header {
+  text-align: right;
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  margin-left: -200px;
+}
+
+.Header a {
+  color: #fafafa;
+}
+
+.Content {
+  margin: 24px 16px 0;
+  overflow: initial;
+  background: #fff;
+  padding: 12px;
+  margin-top: 80px;
+}
+
+.Footer {
+  text-align: center;
+}
+
+#components-form-demo-normal-login .login-form {
+  max-width: 300px;
+}
+#components-form-demo-normal-login .login-form-forgot {
+  float: right;
+}
+#components-form-demo-normal-login .login-form-button {
+  width: 100%;
+}

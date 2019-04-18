@@ -1,0 +1,11 @@
+click
+fabric
+ujson
+sanic==18.12.0
+motor
+apscheduler
+aiohttp
+maya
+aiocache
+msgpack
+sanic_session
