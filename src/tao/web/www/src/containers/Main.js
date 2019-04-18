@@ -163,9 +163,7 @@ class Main extends React.Component {
           onCancel={this.handleRegisterOut}
           footer={null}
           >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
+          <RegistrationForm/>
           </Modal>
           <Modal
           title="登录"
@@ -173,7 +171,7 @@ class Main extends React.Component {
           onCancel={this.handleLoginOFF}
           footer={null}
           >
-          {/*<LoginForm/>*/}
+          <LoginForm/>
           </Modal>
           <Content className={styles.Content}>
             <Switch>

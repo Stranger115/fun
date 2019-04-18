@@ -4,8 +4,8 @@ import React from 'react'
 import {
   Form, Icon, Input, Button, Checkbox, message,
 } from 'antd';
-import { FormItemLayout, FormItemLayoutWithOutLabel, TwoColumnsFormItemLayout } from '../../constants'
 import axios from "axios";
+import style from './index.css';
 
 
 class LoginForm extends React.Component {
@@ -20,6 +20,7 @@ class LoginForm extends React.Component {
     .then(() => {
       message.success('登录成功')
       window.location = '/'
+      this.props.setState({ visibleLogin:false})
     })
     .catch(err => {
       message.error('logout失败')
@@ -29,7 +30,7 @@ class LoginForm extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <Form onSubmit={this.handleSubmit} className="login-form">
+      <Form onSubmit={this.handleSubmit} className={style.login_form}>
         <Form.Item>
           {getFieldDecorator('userName', {
             rules: [{ required: true, message: 'Please input your username!' }],
@@ -51,8 +52,8 @@ class LoginForm extends React.Component {
           })(
             <Checkbox>Remember me</Checkbox>
           )}
-          <a className="login-form-forgot" href="">Forgot password</a>
-          <Button type="primary" htmlType="submit" className="login-form-button">
+          <a className= {style.login_form_forgot} href="">Forgot password</a>
+          <Button type="primary" htmlType="submit" className={style.login_form_button}>
             Log in
           </Button>
           Or <a href="">register now!</a>
