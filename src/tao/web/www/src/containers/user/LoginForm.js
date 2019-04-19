@@ -22,17 +22,16 @@ class LoginForm extends React.Component {
       if (!err) {
         console.log('Received values of form: ', values);
         axios.post('/api/v1/login', values)
-        .then(() => {
+        .then((value) => {
+          console.log(value.data)
           message.success('登录成功')
-          this.props.onSubmit(values)
-          window.location = '/'
+          this.props.onSubmit(value.data)
+          // window.location = '/'
         })
         .catch(err => {
-          message.error('登录失败')
+          message.error(err)
           })
       }
-
-
     });
   }
   render() {

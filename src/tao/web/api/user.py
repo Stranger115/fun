@@ -8,10 +8,10 @@ from tao.utils import jsonify
 
 
 user_bp = Blueprint('users')
-md5 = hashlib.md5()
 
 
 def hash_psd(psd):
+    md5 = hashlib.md5()
     md5.update(psd.encode("utf8"))
     secret = md5.hexdigest()
     return secret
@@ -50,8 +50,10 @@ async def login(request):
     result = await AllUser.find_one({'user_name': user_name})
     # 密码加密
     if result:
-        if result['password'][0] == hash_psd(psd):
-            return json(jsonify({'success': '登录成功'}))
+        secret = hash_psd(psd)
+        logging.info(result)
+        if result['password'][0] == secret:
+            return json(jsonify({'username': user_name, 'role': result.get('user_label', 0)}))
         else:
             raise InvalidUsage('密码或用户名错误')
     raise InvalidUsage('用户不存在')

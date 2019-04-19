@@ -1,7 +1,7 @@
 'use strict'
 
 import React from 'react'
-import { Layout, Divider, Menu, Modal, Icon, Dropdown, message, Form, Input, Button, Checkbox } from 'antd'
+import { Layout, Divider, Menu, Modal, Icon, Dropdown, message } from 'antd'
 import { inject, observer } from 'mobx-react'
 import { Switch, withRouter, Route, Link } from 'react-router-dom'
 import axios from 'axios'
@@ -15,29 +15,18 @@ import { LoginForm, RegistrationForm } from './user'
 
 
 const { Header, Content, Footer, Sider } = Layout
+const SubMenu = Menu.SubMenu;
 
 
 @withRouter
 @inject('sysStore', 'userActions', 'userStore')
 @observer
 class Main extends React.Component {
-  state = {version: undefined, user: {}, visibleRegister:false, visibleLogin:false}
+  state = {version: undefined, user: undefined, role:0, visibleRegister:false, visibleLogin:false}
 
   async componentWillMount() {
-    
-    // await axios.all([
-    //   axios.get('/api/v1/version'),
-    //   axios.get('/api/v1/user'),
-    // ])
-    // .then(axios.spread((versionResp, userResp) => {
-    //   this.setState({
-    //     version: versionResp.data.version,
-    //     user: {name: userResp.data.name, username: userResp.data.username}
-    //   })
-    // }))
-    // .catch(err => {
-    //   message.error('读取用户信息失败')
-    // })
+    console.log(this.state.user)
+    setTimeout(1000)
   }
   handleLoginOn = (e) => {
     this.setState({ visibleLogin:true})
@@ -67,9 +56,11 @@ class Main extends React.Component {
       })
   }
 
-  handleLogin = (e, value) => {
-    this.setState({ user: value})
+  handleLogin = (e) => {
+    console.log(e)
+    this.setState({ user: e ,  role:e.role, visibleLogin:false})
   }
+
   handleLogout = (e) => {
     axios.get('/api/v1/logout')
       .then(() => {
@@ -80,11 +71,9 @@ class Main extends React.Component {
         message.error('logout失败')
       })
   }
-
-  render() {
-
-    let headers = null
-    if (this.state.user){
+  GetHeadder = (e) => {
+     let headers = null
+     if (this.state.user === undefined){
       headers = <span>
                   <span className='nav-text'><a onClick={this.handleRegisterOn}>注册</a></span>
                   <Divider  type='vertical'/>
@@ -102,7 +91,64 @@ class Main extends React.Component {
               </Menu.Item>
             </Menu>
           }>
-            <a className="ant-dropdown-link" href="javascript:void(0)">{this.state.user.user_name}<Icon type="down" /></a>
+            <a className="ant-dropdown-link" href="javascript:void(0)">{this.state.user.username}<Icon type="down" /></a>
+          </Dropdown>
+    }
+    return headers
+  }
+
+  GetSider = (e, item) => {
+    let menu = null
+    let sub = item.subMenu
+    if(sub){
+      menu = <SubMenu key="sub1" title={<span><Icon type="mail" /><span>Navigation One</span></span>}>
+            {
+              sub
+                .filter(item => item.inMenu && item.role<=this.state.role)
+                .map(item => (
+                  <Menu.Item key={item.url}>
+                    <Link to={item.url}>
+                      <span className='nav-text'>{item.name}</span>
+                    </Link>
+                  </Menu.Item>
+              ))
+            }
+          </SubMenu>
+    }
+    else {
+      menu = <Menu.Item key={item.url}>
+                <Link to={item.url}>
+                  <Icon type={item.icon} />
+                  <span className='nav-text'>{item.name}</span>
+                </Link>
+              </Menu.Item>
+    }
+    return menu
+  }
+
+  render() {
+
+    // let headers = this.GetHeadder()
+    let headers = null
+    if (this.state.user == undefined){
+      headers = <span>
+                  <span className='nav-text'><a onClick={this.handleRegisterOn}>注册</a></span>
+                  <Divider  type='vertical'/>
+        <span className='nav-text'><a onClick={this.handleLoginOn}>登录</a></span>
+                </span>
+    }
+    else{
+      headers =
+          <Dropdown overlay={
+            <Menu>
+              <Menu.Item key='logout'>
+                <a href='javascript:void(0)' onClick={this.handleLogout}>
+                  Logout
+                </a>
+              </Menu.Item>
+            </Menu>
+          }>
+            <a className="ant-dropdown-link" href="javascript:void(0)">{this.state.user.username}<Icon type="down" /></a>
           </Dropdown>
     }
 
@@ -118,7 +164,7 @@ class Main extends React.Component {
           >
             {
               Menus
-                .filter(item => item.inMenu)
+                .filter(item => item.inMenu && item.role<=this.state.role)
                 .map(item => (
                   <Menu.Item key={item.url}>
                     <Link to={item.url}>
@@ -132,36 +178,7 @@ class Main extends React.Component {
         </Sider>
         <Layout className={styles.Container}>
           <Header className={styles.Header}>
-            {headers
-            // Externals.map((e, idx) => (
-            //     <span key={e.name} >
-            //     {
-            //       e.children === undefined ?
-            //       <a href={e.url} target='_blank' rel='noopener noreferrer'>
-            //         {e.name}
-            //       </a> :
-            //       <Dropdown overlay={
-            //         <Menu>
-            //           {
-            //             e.children.map(e =>(
-            //               <Menu.Item key={e.name}>
-            //                 <a href={e.url} target='_blank' rel='noopener noreferrer'>
-            //                   {e.name}
-            //                 </a>
-            //               </Menu.Item>
-            //             ))
-            //           }
-            //         </Menu>
-            //       }>
-            //         <a className="ant-dropdown-link" href="javascript:void(0)">{e.name}<Icon type="down" /></a>
-            //       </Dropdown>
-            //     }
-            //     {
-            //       idx+1 !== Externals.length && <Divider type='vertical'/>
-            //     }
-            //   </span>
-            // ))
-          }
+            {headers}
           </Header>
           <Modal
           title="注册"

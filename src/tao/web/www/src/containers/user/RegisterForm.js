@@ -23,7 +23,7 @@ class RegistrationForm extends React.Component {
         axios.post('/api/v1/regedit', values)
         .then(resp => {
           message.success('注册成功')
-          this.props.onSubmit(values)
+          this.props.onSubmit()
         })
         .catch(err => {
           message.error(err)
