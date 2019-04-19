@@ -11,6 +11,7 @@ import ModulesManager from './containers/modules'
 import EnvsManager from './containers/environments'
 import DNSManager from './containers/dns'
 import Store from './containers/store'
+import Admin from './containers/admin'
 
 
 export default [
@@ -20,13 +21,42 @@ export default [
     icon: 'shopping-cart',
     component: Store,
     inMenu: true,
+    role:0x00,
+    subMenu:null,
   },
   {
-    name: 'Feature看板',
-    url: '/feature',
+    name: '管理模块',
+    url: '/admin',
     icon: 'schedule',
-    component: Feature,
+    component: Admin,
     inMenu: true,
+    role: 0,//0xff,
+    subMenu:[
+      {
+        name: '会员管理',
+        url: '/store:id',
+        icon: 'shopping-cart',
+        component: Store,
+        inMenu: true,
+        role:0x00,
+      },
+      {
+        name: '商品管理',
+        url: '/store:id',
+        icon: 'shopping-cart',
+        component: Store,
+        inMenu: true,
+        role:0x00,
+      },
+      {
+        name: '账单管理',
+        url: '/store:id',
+        icon: 'shopping-cart',
+        component: Store,
+        inMenu: true,
+        role:0x00,
+      }
+    ],
   }, {
     name: 'Featuree详情',
     url: '/feature/:id',
