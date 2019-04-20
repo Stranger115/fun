@@ -63,3 +63,13 @@ async def login(request):
 async def change_profile(request):
     """修改个人资料"""
 
+
+@user_bp.get('api/v1/users')
+async def get_user(request):
+    result = [user async for user in AllUser.find({})]
+    users = []
+    for record in result:
+        user = {'username': record.get('username', '未命名'), 'role': result.get('user_label', 0)}
+        users.append(user)
+    return json(jsonify({'users': users, 'total': AllUser.count_documents({})}))
+
