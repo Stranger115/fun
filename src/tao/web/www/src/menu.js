@@ -6,7 +6,7 @@ import {ProdcutsManager, CherkManager, UserManager } from './containers/admin'
 export default [
   {
     name: '商品列表',
-    url: '/store:id',
+    url: '/store',
     icon: 'shopping-cart',
     component: Store,
     inMenu: true,
@@ -23,7 +23,7 @@ export default [
     subMenu:[
       {
         name: '会员管理',
-        url: '/store:id',
+        url: '/UserManager',
         icon: 'shopping-cart',
         component: UserManager,
         inMenu: true,
@@ -31,7 +31,7 @@ export default [
       },
       {
         name: '商品管理',
-        url: '/store:id',
+        url: '/ProdcutsManager',
         icon: 'shopping-cart',
         component: ProdcutsManager,
         inMenu: true,
@@ -39,7 +39,7 @@ export default [
       },
       {
         name: '账单管理',
-        url: '/store:id',
+        url: '/CherkManager',
         icon: 'shopping-cart',
         component: CherkManager,
         inMenu: true,

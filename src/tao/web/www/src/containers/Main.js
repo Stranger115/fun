@@ -125,20 +125,11 @@ class Main extends React.Component {
     return menu
   }
 
-  GetSider = (e) => {
-    let menu = null
-    Menus.filter(item => item.inMenu && item.role<=this.state.role)
-      .map((item) =>  {
-        let result = this.GetMenu(item)
-        console.log(result)
-        if(menu){
-          menu += result
-        }
-        else{
-          menu = result
-        }
-        })
-    return menu
+  GetRouter = (item) => {
+    let router = item.map(i => (
+      <Route key={i.url} path={i.url} exact component={i.component}/>
+  ))
+    return router
   }
 
   render() {
@@ -193,9 +184,12 @@ class Main extends React.Component {
             <Switch>
               <Route key={'/'} path='/' exact component={Overview}/>
               {
-                Menus.map(item => (
-                  <Route key={item.url} path={item.url} exact component={item.component}/>
-                ))
+                Menus.map(item => {
+                    if(item.subMenu){
+                      return this.GetRouter(item.subMenu)
+                    }
+                    return <Route key={item.url} path={item.url} exact component={item.component}/>
+                  })
               }
             </Switch>
           </Content>
