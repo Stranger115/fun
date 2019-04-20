@@ -69,7 +69,21 @@ async def get_user(request):
     result = [user async for user in AllUser.find({})]
     users = []
     for record in result:
-        user = {'username': record.get('username', '未命名'), 'role': result.get('user_label', 0)}
+        logging.info(record)
+        user = {
+            'username': record.get('user_name', '未命名'),
+            'role': record.get('user_label', 0),
+            'sex': record.get('sex', 1)
+        }
         users.append(user)
-    return json(jsonify({'users': users, 'total': AllUser.count_documents({})}))
+    return json(jsonify({'users': users, 'total': await AllUser.count_documents({})}))
+
+
+@user_bp.post('api/v1/change')
+async def change_user(role):
+    result = AllUser.find_one({})
+    return json(jsonify({'success': '成功'}))
+
+
+
 
