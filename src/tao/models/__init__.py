@@ -19,7 +19,7 @@ model relation map:
 '''
 from .base import BaseModel
 from .product import Product, Order
-from .user import AllUser
+from .user import AllUser, Permission
 from .message import Message
 from .task import Task
 from .event import GitlabEvent

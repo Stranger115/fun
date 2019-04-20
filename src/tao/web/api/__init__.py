@@ -6,3 +6,4 @@ from .pci import pci_bp
 from .monitor import monitor_bp
 from .auth import auth_bp
 from .user import user_bp
+from .role import role_bp

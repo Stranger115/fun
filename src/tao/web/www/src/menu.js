@@ -1,6 +1,6 @@
 import React from 'react'
 import Store from './containers/store'
-import {ProdcutsManager, CherkManager, UserManager } from './containers/admin'
+import {ProdcutsManager, CherkManager, UserManager, RoleManager } from './containers/admin'
 
 
 export default [
@@ -26,6 +26,14 @@ export default [
         url: '/UserManager',
         icon: 'shopping-cart',
         component: UserManager,
+        inMenu: true,
+        role:0x00,
+      },
+      {
+        name: '权限管理',
+        url: '/RoleManager',
+        icon: 'shopping-cart',
+        component: RoleManager,
         inMenu: true,
         role:0x00,
       },

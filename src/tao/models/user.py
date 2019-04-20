@@ -1,8 +1,6 @@
 import pymongo
 from .base import BaseModel
 
-
-
 class AllUser(BaseModel):
     __cname__ = 'user'
     __indexes__ = [
@@ -11,10 +9,11 @@ class AllUser(BaseModel):
             'unique': True}]
 
     @classmethod
-    def create(cls, user_name, password,  sex, picture=None, role=0, money=0):
+    def create(cls, user_name, password, phone,  sex, picture=None, role=0, money=0):
         return cls.create({
             'user_name': user_name,
             'password': password,
+            'phone': phone,
             'picture': picture,
             'sex': sex,
             'user_label': role,
@@ -24,9 +23,15 @@ class AllUser(BaseModel):
 
 class Permission(BaseModel):
     __cname__ = 'permission'
+    __indexes__ = [
+        {'indexes': [
+            ('role', pymongo.ASCENDING)],
+            'unique': True}]
 
     @classmethod
-    def create(cls, role):
+    def create(cls, role, description, level=0):
         return cls.create({
-            'role': role
+            'role': role,
+            'description': description,
+            'level': level
         })

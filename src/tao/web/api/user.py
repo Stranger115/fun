@@ -3,7 +3,7 @@ import logging
 from sanic import Blueprint
 from sanic.response import json
 from sanic.exceptions import InvalidUsage, ServerError
-from tao.models import AllUser
+from tao.models import AllUser, Permission
 from tao.utils import jsonify
 
 
@@ -69,21 +69,40 @@ async def get_user(request):
     result = [user async for user in AllUser.find({})]
     users = []
     for record in result:
-        logging.info(record)
+        role = record.get('user_label', 0)
+        role_des = await Permission.find_one({'role': role})
         user = {
             'username': record.get('user_name', '未命名'),
-            'role': record.get('user_label', 0),
+            'role':  '普通会员',
             'sex': record.get('sex', 1)
         }
         users.append(user)
     return json(jsonify({'users': users, 'total': await AllUser.count_documents({})}))
 
 
-@user_bp.post('api/v1/change')
-async def change_user(role):
-    result = AllUser.find_one({})
-    return json(jsonify({'success': '成功'}))
-
-
+@user_bp.put('api/v1/add_user')
+async def add_user(request):
+    """管理员添加用户"""
+    user_name = request.json.get('username')
+    psd = request.json.get('phoneNum')
+    sex = request.json.get('sex')
+    role = request.json.get('role')
+    try:
+        result = await AllUser.find_one({'user_name': user_name})
+        if not result:
+            secret = hash_psd(psd)
+            logging.info(secret)
+            user = AllUser()
+            user.user_name = user_name
+            user.phone = psd
+            user.password = secret,
+            user.sex = sex
+            result = await user.save()
+            logging.info(result)
+            return json(jsonify({'success': '注册成功'}))
+        else:
+            raise InvalidUsage('用户已存在')
+    except Exception as e:
+        logging.info(e)
 
 
