@@ -3,7 +3,7 @@
 import React from 'react'
 import axios from 'axios'
 import { Input, Table, Icon, message, Popconfirm, Divider } from 'antd'
-import { EditableCell, EditableFormRow, EditableContext } from '../../components/Form/DNSForm'
+import { EditableCell, EditableFormRow, EditableContext } from '../../components/Form/UserForm'
 import { DNSDialog } from "../../components/Dialog"
 
 
@@ -20,8 +20,20 @@ export default class UserManager extends React.Component {
     this.users = []
     this.qs = undefined
     this.columns = [
-      {title: '昵称', width: '30%', align: 'center', dataIndex: 'username', editable: true, key: 'username'},
-      {title: '会员等级', width: '20%', align: 'center', dataIndex: 'role', editable: true, key: 'role'},
+      {title: '昵称', width: '30%', align: 'center', dataIndex: 'username', editable: false, key: 'username'},
+      {title: '性别', width: '10%', align: 'center', dataIndex: 'sex', editable: true, key: 'sex',render: text => (
+        text === 1? (
+          <div>
+            <Icon type="woman" />
+          </div>
+        ): (
+          <div>
+            <Icon type="man" />
+          </div>
+        )
+      )},
+      {title: '电话', width: '20%', align: 'center', dataIndex: 'username', editable: true, key: 'username'},
+      {title:'会员等级', width: '20%', align: 'center', dataIndex: 'role', editable: true, key: 'role'},
       {
         title: (
           <span>
@@ -39,6 +51,7 @@ export default class UserManager extends React.Component {
             />
           </span>
         ),
+        width: '20%',
         align: 'center',
         dataIndex: '_add',
         key: '_add',

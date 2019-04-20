@@ -28,7 +28,7 @@ export default class RoleManager extends React.Component {
          <span>管理员</span>
         )
       )},
-      {title: '权限设置', width: '20%', align: 'center', dataIndex: 'username', editable: true, key: 'username'},
+      {title: '权限设置', width: '20%', align: 'center', dataIndex: 'permission', editable: true, key: 'permission'},
       {title: '操作', width: '20%', align: 'center', dataIndex: '_add', key: '_add',
         render: (text, record) => (
           this.isEditing(record) ? (
