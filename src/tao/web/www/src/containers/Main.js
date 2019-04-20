@@ -96,12 +96,11 @@ class Main extends React.Component {
     }
     return headers
   }
-
-  GetSider = (e, item) => {
+  GetMenu = (item) => {
     let menu = null
     let sub = item.subMenu
     if(sub){
-      menu = <SubMenu key="sub1" title={<span><Icon type="mail" /><span>Navigation One</span></span>}>
+      menu = <SubMenu key="sub1" title={<span><Icon type="mail" /><span>管理模块</span></span>}>
             {
               sub
                 .filter(item => item.inMenu && item.role<=this.state.role)
@@ -126,32 +125,27 @@ class Main extends React.Component {
     return menu
   }
 
+  GetSider = (e) => {
+    let menu = null
+    Menus.filter(item => item.inMenu && item.role<=this.state.role)
+      .map((item) =>  {
+        let result = this.GetMenu(item)
+        console.log(result)
+        if(menu){
+          menu += result
+        }
+        else{
+          menu = result
+        }
+        })
+    return menu
+  }
+
   render() {
 
-    // let headers = this.GetHeadder()
-    let headers = null
-    if (this.state.user == undefined){
-      headers = <span>
-                  <span className='nav-text'><a onClick={this.handleRegisterOn}>注册</a></span>
-                  <Divider  type='vertical'/>
-        <span className='nav-text'><a onClick={this.handleLoginOn}>登录</a></span>
-                </span>
-    }
-    else{
-      headers =
-          <Dropdown overlay={
-            <Menu>
-              <Menu.Item key='logout'>
-                <a href='javascript:void(0)' onClick={this.handleLogout}>
-                  Logout
-                </a>
-              </Menu.Item>
-            </Menu>
-          }>
-            <a className="ant-dropdown-link" href="javascript:void(0)">{this.state.user.username}<Icon type="down" /></a>
-          </Dropdown>
-    }
-
+    let headers = this.GetHeadder()
+    // let menu = this.GetSider()
+    // console.log(menu)
     return (
       <Layout>
         <Sider className={styles.Sider}>
@@ -165,14 +159,10 @@ class Main extends React.Component {
             {
               Menus
                 .filter(item => item.inMenu && item.role<=this.state.role)
-                .map(item => (
-                  <Menu.Item key={item.url}>
-                    <Link to={item.url}>
-                      <Icon type={item.icon} />
-                      <span className='nav-text'>{item.name}</span>
-                    </Link>
-                  </Menu.Item>
-              ))
+                .map((item) => {
+                    let menu = this.GetMenu(item)
+                    return menu
+                  })
             }
           </Menu>
         </Sider>
