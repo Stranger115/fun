@@ -23,7 +23,7 @@ export default class ProdcutsManager extends React.Component {
       {title: '名称', width: '20%', align: 'center', dataIndex: 'name', editable: true, key: 'name',
         render: (text, record) => (
           <span>
-            <span>{text}</span>
+            <span>{text}&nbsp; &nbsp;</span>
             <a onClick={this.edit}><Icon  type="edit" /></a>
             <Divider type='vertical'/>
             <a onClick={this.delete}><Icon type="delete" /></a>
@@ -164,12 +164,19 @@ export default class ProdcutsManager extends React.Component {
   handleCloseProduct =() =>{
     this.setState({visibleProduct:false})
   }
+
+  handleSubmitProduct = async ()=>{
+    this.handleCloseProduct()
+    await this.getProduct()
+  }
+
   handleAddLabel = () =>{
     this.setState({visibleLabel:true})
   }
   handleCloseLabel =() =>{
     this.setState({visibleLabel:false})
   }
+
 
   delete = _id => {
     const dataSource = this.prodcuts
@@ -234,7 +241,7 @@ export default class ProdcutsManager extends React.Component {
           onCancel={this.handleCloseProduct}
           footer={null}
         >
-          <ProductForm onSubmit={this.handleCloseProduct}/>
+          <ProductForm onSubmit={this.handleSubmitProduct}/>
         </Modal>
         <Modal
           title="添加分类"

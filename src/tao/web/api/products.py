@@ -5,6 +5,7 @@ from sanic.exceptions import InvalidUsage, NotFound
 from tao.models.product import Product, Label, Order, ShoppingCart
 from tao.settings import PRODUCTS_LINE_LIMIT
 from tao.utils import jsonify
+from bson.objectid import ObjectId
 
 
 product_bp = Blueprint('product')
@@ -24,7 +25,10 @@ async def get_products(request):
 async def get_all_products(request):
     """获取所有商品列表"""
     products = [record async for record in Product.find({})]
-    return json(jsonify({'products': products}))
+    for i in products:
+        label = await Label.find_one({'_id': ObjectId(i.get('label', None))})
+        i.update({'label': label['name']})
+    return json(jsonify({'products': products, 'total': await Product.count_documents({})}))
 
 
 @product_bp.post('/api/v1/order/<user_id>')
@@ -39,11 +43,11 @@ async def post_order(request, user_id):
     return json(jsonify({'id': order.inserted_id}))
 
 
-@product_bp.put('/api/v1/loadProduct/<id>')
-async def update_product(request, id):
+@product_bp.put('/api/v1/loadProduct/<name>')
+async def update_product(request, name):
     """商品上下架"""
     flag = request.json.get('flag')
-    await Product.update_one({'_id': id}, {'$set': {'flag': flag}})
+    await Product.update_one({'name': name}, {'$set': {'flag': flag}})
     return json(jsonify({'_id': id}))
 
 
@@ -73,7 +77,7 @@ async def update_product(request, id):
 @product_bp.post('/api/v1/product')
 async def post_product(request):
     """商品录入"""
-    if request.json:
+    if not request.json:
         raise InvalidUsage('not json request!')
     name = request.json.get('name')
     stock = request.json.get('stock')
@@ -86,7 +90,7 @@ async def post_product(request):
 @product_bp.get('/api/v1/labels')
 async def get_label(request):
     """获取商品类型"""
-    labels = [record async for record in Product.find({})]
+    labels = [record async for record in Label.find({})]
     return json(jsonify({'labels': labels}))
 
 

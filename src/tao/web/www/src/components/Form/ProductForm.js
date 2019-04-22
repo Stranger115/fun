@@ -19,11 +19,17 @@ function hasErrors(fieldsError) {
 export class ProductForm extends React.Component {
   constructor(props) {
     super(props)
-    this.labels = null
+    this.labels = []
   }
-  componentDidMount() {
+  async componentWillMount() {
+    await this.handleLabel()
+
+  }
+  async componentDidMount() {
+
     // To disabled submit button at the beginning.
     this.props.form.validateFields()
+
   }
 
   handleSubmit = async (e) => {
@@ -66,7 +72,7 @@ export class ProductForm extends React.Component {
           {...FormItemLayout}
           validateStatus={nameError ? 'error' : ''}
           help={nameError || ''}
-          label='商品名'
+          label='商品:'
         >
             {getFieldDecorator('name', {
             rules: [{ required: true, message: '请输入商品名!' }],
@@ -93,10 +99,9 @@ export class ProductForm extends React.Component {
           label='价格'
         >
           {getFieldDecorator('price', {
-            initialValue:'price',
-            rules: [{ required: true, whitespace: true,  message: '请输入价格!' }],
+            rules: [{ required: true,   message: '请输入价格!' }],
           })(
-           <InputNumber placeholder="请输入价格" />
+           <InputNumber  />
           )}
         </Form.Item>
         <Form.Item
@@ -106,12 +111,11 @@ export class ProductForm extends React.Component {
           label='分类'
         >
           {getFieldDecorator('label', {
-            initialValue:'labell',
-            rules: [{ required: true, whitespace: true,  message: '请选择分类!' }],
+            rules: [{ required: true,  message: '请选择分类!' }],
           })(
             <Select placeholder="请选择类型">
               {
-                this.labels.map(item=>(
+                this.labels.name(item=>(
                   <Option key={item._id} value={item._id}>{item.name}</Option>
                 ))
               }
