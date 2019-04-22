@@ -9,9 +9,8 @@ from sanic.response import redirect, json
 from sanic.exceptions import Unauthorized
 from sanic_session import Session, InMemorySessionInterface
 from tao.models import init_db
-from tao.common import DingdingProxy
 from tao.settings import API_WHITELIST
-from .api import gitlab_bp, dns_bp, common_bp, cci_bp, pci_bp, monitor_bp, auth_bp, user_bp, role_bp
+from .api import product_bp, user_bp, role_bp
 
 
 _www_build_path = os.path.join(os.path.dirname(__file__), 'www', 'build')
@@ -27,14 +26,8 @@ session = Session(app, interface=InMemorySessionInterface())
 app.config.AUTH_LOGIN_ENDPOINT = 'login'
 auth = Auth(app)
 
-app.blueprint(auth_bp)
-app.blueprint(gitlab_bp)
-app.blueprint(dns_bp)
-app.blueprint(common_bp)
-app.blueprint(cci_bp)
-app.blueprint(pci_bp)
-app.blueprint(monitor_bp)
 
+app.blueprint(product_bp)
 app.blueprint(user_bp)
 app.blueprint(role_bp)
 
@@ -50,7 +43,6 @@ app.static('/manifest.json', _join('manifest.json'))
 async def init(app, loop) -> None:
     init_db(loop)
     app.async_session = aiohttp.ClientSession(loop=loop, json_serialize=ujson.dumps)
-    DingdingProxy.init_session(app.async_session)
     _snapshots.append(None)
     _snapshots.append(_get_snapshot())
 
