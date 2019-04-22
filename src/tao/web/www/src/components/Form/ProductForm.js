@@ -48,14 +48,13 @@ export class ProductForm extends React.Component {
         this.labels = resp.data.labels
       })
       .catch(e => {
-        message.error('加载prodcut列表失败！')
+        message.error('加载分类列表失败！')
       })
   }
   render() {
     const {
       getFieldDecorator, getFieldsError, getFieldError, isFieldTouched,
     } = this.props.form
-
     // Only show error after a field is touched.
     const nameError = isFieldTouched('name') && getFieldError('name')
     const stockError = isFieldTouched('stock') && getFieldError('stock')

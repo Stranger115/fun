@@ -1,7 +1,8 @@
+import logging
 from sanic import Blueprint
 from sanic.response import json
 from sanic.exceptions import InvalidUsage, NotFound
-from tao.models.product import Product, Order, ShoppingCart
+from tao.models.product import Product, Label, Order, ShoppingCart
 from tao.settings import PRODUCTS_LINE_LIMIT
 from tao.utils import jsonify
 
@@ -12,7 +13,7 @@ product_bp = Blueprint('product')
 @product_bp.get('/api/v1/products')
 async def get_products(request):
     """获取商品列表"""
-    results = [record async for record in await Product.find({})]
+    results = [record async for record in Product.find({})]
     products = []
     for i in range(0, len(results), PRODUCTS_LINE_LIMIT):
         products.append(results[i:i + PRODUCTS_LINE_LIMIT])
@@ -22,7 +23,7 @@ async def get_products(request):
 @product_bp.get('/api/v1/all_products')
 async def get_all_products(request):
     """获取所有商品列表"""
-    products = [record async for record in await Product.find({})]
+    products = [record async for record in Product.find({})]
     return json(jsonify({'products': products}))
 
 
@@ -85,5 +86,19 @@ async def post_product(request):
 @product_bp.get('/api/v1/labels')
 async def get_label(request):
     """获取商品类型"""
-    labels = [record async for record in await Product.find({})]
+    labels = [record async for record in Product.find({})]
     return json(jsonify({'labels': labels}))
+
+
+@product_bp.post('api/v1/label')
+async def add_label(request):
+    """添加商品类型"""
+    name = request.json.get('name')
+    # await Label.delete_many({'name': name})
+    result = await Label.find_one({'name': name})
+    logging.info(result)
+    logging.info(not result)
+    if not result:
+        await Label.create(name)
+        return json(jsonify({'result': 'success'}))
+    raise InvalidUsage('分类已存在')

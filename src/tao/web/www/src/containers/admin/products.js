@@ -3,7 +3,7 @@
 import React from 'react'
 import axios from 'axios'
 import { Input, Table, Icon, message, Popconfirm, Divider } from 'antd'
-import { ProductForm } from "../../components/Form"
+import { ProductForm,LabelForm } from "../../components/Form"
 import Modal from "antd/lib/modal";
 
 
@@ -31,7 +31,12 @@ export default class ProdcutsManager extends React.Component {
         )},
       {title: '库存', width: '20%', align: 'center', dataIndex: 'stock', editable: true, key: 'stock'},
       {title: '价格', width: '20%', align: 'center', dataIndex: 'price', editable: true, key: 'price'},
-      {title: '种类', width: '20%', align: 'center', dataIndex: 'label', editable: true, key: 'label'},
+      {title: (
+          <span>
+            <span>种类</span>
+            <a onClick={this.handleAddLabel}><Icon  type="plus" /></a>
+          </span>
+        ), width: '20%', align: 'center', dataIndex: 'label', editable: true, key: 'label'},
       {
         title: (
           <span>
@@ -230,6 +235,14 @@ export default class ProdcutsManager extends React.Component {
           footer={null}
         >
           <ProductForm onSubmit={this.handleCloseProduct}/>
+        </Modal>
+        <Modal
+          title="添加分类"
+          width={340}
+          visible={this.state.visibleLabel}
+          onCancel={this.handleCloseLabel}
+          footer={null}>
+          <LabelForm onSubmit={this.handleCloseLabel}/>
         </Modal>
       </div>
     )

@@ -18,7 +18,7 @@ model relation map:
                           Pipeline * N       Pipeline * N
 '''
 from .base import BaseModel
-from .product import Product, Order
+from .product import Product, Order, Label
 from .user import AllUser, Permission
 
 def init_db(loop):

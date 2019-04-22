@@ -20,8 +20,8 @@ class Product(BaseModel):
             'update_time': get_timestamp()})
 
 
-class Product(BaseModel):
-    __cname__ = 'product'
+class Label(BaseModel):
+    __cname__ = 'Labels'
     __indexes__ = [
         {'indexes': [('name', pymongo.ASCENDING)], 'unique': True}]
 
