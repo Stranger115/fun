@@ -20,6 +20,19 @@ class Product(BaseModel):
             'update_time': get_timestamp()})
 
 
+class Product(BaseModel):
+    __cname__ = 'product'
+    __indexes__ = [
+        {'indexes': [('name', pymongo.ASCENDING)], 'unique': True}]
+
+    @classmethod
+    async def create(cls, name):
+        return await cls.insert_one({
+            'name': name,
+            'create_time': get_timestamp(),
+            'update_time': get_timestamp()})
+
+
 class ShoppingCart(BaseModel):
     __cname__ = 'shopping_cart'
 
