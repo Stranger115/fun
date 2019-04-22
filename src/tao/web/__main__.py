@@ -21,7 +21,7 @@ def _join(path):
 
 
 app = Sanic()
-session = Session(app, interface=InMemorySessionInterface())
+# session = Session(app, interface=InMemorySessionInterface())
 
 app.config.AUTH_LOGIN_ENDPOINT = 'login'
 auth = Auth(app)
@@ -42,14 +42,15 @@ app.static('/manifest.json', _join('manifest.json'))
 @app.listener('before_server_start')
 async def init(app, loop) -> None:
     init_db(loop)
-    app.async_session = aiohttp.ClientSession(loop=loop, json_serialize=ujson.dumps)
+    # app.async_session = aiohttp.ClientSession(loop=loop, json_serialize=ujson.dumps)
     _snapshots.append(None)
     _snapshots.append(_get_snapshot())
 
 
 @app.listener('before_server_stop')
 async def teardown(app, loop) -> None:
-    await app.async_session.close()
+    # await app.async_session.close()
+    pass
 
 @app.middleware('request')
 async def is_authorized_request(request):
@@ -64,10 +65,10 @@ async def is_authorized_request(request):
     #         logging.debug('auth check failed, redirect to auth url')
     #         return redirect('/api/v1/auth')
     #     raise Unauthorized('unauthorized')
-    request['session'] = session
+    # request['session'] = session
     return
 
-auth = Auth(app)
+# auth = Auth(app)
 
 
 @app.get('/')
