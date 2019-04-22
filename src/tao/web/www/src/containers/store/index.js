@@ -2,22 +2,14 @@
 
 import React from 'react'
 import 'antd/dist/antd.css';
-import {Carousel, Card, Divider, Tag, Pagination, Button, Table, message} from 'antd'
+import {Carousel, Card, Divider, Tag,  Button, Table, message} from 'antd'
 import {Sorts, Products} from '../../externals'
 import styles from './index.css';
 import ads from '../../static/ads.jpg'
 import logo from '../../static/logo.png'
 import {Menu} from "antd/lib/menu";
 import {PageNumSessionKey} from "../../constants";
-import {getSearchParams} from "../../utils";
-import axios from "axios";
 
-const onChangeShowProcucts = (current, pageSize) =>{
-  console.log(current, pageSize);
-};
-const onShowSizeChange = (current, pageSize) =>{
-
-};
 
 export default class Store extends React.Component {
   constructor(props) {

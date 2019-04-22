@@ -8,7 +8,6 @@ import axios from 'axios'
 
 import logo from '../logo.svg'
 import Menus from '../menu'
-import { Externals } from '../externals'
 import styles from './Main.css'
 import Overview from './overview'
 import { LoginForm, RegistrationForm } from './user'
