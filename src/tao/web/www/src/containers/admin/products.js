@@ -19,14 +19,15 @@ export default class ProdcutsManager extends React.Component {
     this.product = {}
     this.products = []
     this.qs = undefined
+    this.name = null
     this.columns = [
       {title: '名称', width: '20%', align: 'center', dataIndex: 'name', editable: true, key: 'name',
-        render: (text, record) => (
+        render: (text, record) =>(
           <span>
             <span>{text}&nbsp; &nbsp;</span>
-            <a onClick={this.edit}><Icon  type="edit" /></a>
+            <a onClick={() => this.handleEdit(record)}><Icon  type="edit" /></a>
             <Divider type='vertical'/>
-            <a onClick={this.delete}><Icon type="delete" /></a>
+            <a onClick={() => this.handleDelete(record.name)}><Icon type="delete" /></a>
           </span>
         )},
       {title: '库存', width: '20%', align: 'center', dataIndex: 'stock', editable: true, key: 'stock'},
@@ -62,11 +63,18 @@ export default class ProdcutsManager extends React.Component {
            <span>
              <span>上架</span>
              <Divider type='vertical'/>
-             <span><a onClick={this.loadStore}>下架</a></span>
+             <span>
+               <a onClick={() => this.handUpdateState(false, record.name)}>
+                 下架
+               </a>
+             </span>
            </span>
          ):(
            <span>
-             <span><a onClick={this.downStore}>上架</a></span>
+             <span><a onClick={() =>  this.handUpdateState(true, record.name)}>
+                 上架
+               </a>
+             </span>
              <Divider type='vertical'/>
              <span>下架</span>
            </span>
@@ -106,56 +114,55 @@ export default class ProdcutsManager extends React.Component {
     }
   }
 
-  loadStore = () => {
-    console.log('上架')
-  }
-
-  downStore = () => {
-    console.log('下架')
+  handUpdateState = async (flag, name) => {
+    flag = {'flag': flag, 'name':name}
+    await axios.get('/api/v1/all_products', flag)
+      .then(resp => {
+        if (flag){
+          message.success('上架成功！')
+        }
+        else{
+          message.success('下架成功！')
+        }
+      })
+      .catch(e => {
+        if (flag){
+          message.error('上架失败！')
+        }
+        else{
+          message.error('下架失败！')
+        }
+      })
+    await this.getProduct()
   }
 
   handleChange = async product => {
     // edit
-    await axios.put('/api/v1/prodcut', product)
+    await axios.put('/api/v1/product', product)
       .then(resp => {
         message.success('成功修改')
       })
       .catch(err => {
         message.error(`修改prodcut失败，错误：${err}`)
       })
+    await this.getProduct()
   }
 
-  handleDelete = async (_id) => {
+  handleDelete = async (name) => {
     // delete
-    const url = '/api/v1/product?_id=' + _id;
-    await axios.delete(url)
+    let value = {'name':name}
+    await axios.delete('/api/v1/product', value)
       .then(resp => {
-        message.success('成功删除prodcut配置')
+        message.success('成功删除商品')
       })
       .catch(err => {
-        message.error(`删除prodcut错误：${err}`)
+        message.error(`删除商品错误：${err}`)
       })
+    await this.getProduct()
   }
-
-  save = (form, _id) => {
-    form.validateFields((error, row) => {
-      if (error) {
-        return
-      }
-      const newData = [...this.products]
-      const index = newData.findIndex(item => _id === item._id)
-      const item = newData[index]
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        })
-      if (_id.length > 1) {
-        this.handleChange(newData[index])
-        this.getProduct().then(() =>{
-                this.setState({ editing_id: '' })
-              })
-      }
-    })
+  handleEdit = async (record) =>{
+    this.handleAddProduct()
+    this.product = record
   }
 
   handleAddProduct = () =>{
@@ -175,20 +182,6 @@ export default class ProdcutsManager extends React.Component {
   }
   handleCloseLabel =() =>{
     this.setState({visibleLabel:false})
-  }
-
-
-  delete = _id => {
-    const dataSource = this.prodcuts
-    this.prodcuts = dataSource.filter(item => item._id !== _id)
-    this.handleDelete(_id)
-    this.getProdcut().then(() =>{
-                this.setState({ editing_id: '' })
-              })
-  }
-
-  add = () =>{
-    this.setState({editvisibleProduct: true})
   }
 
   handleSearch = async (e) => {
@@ -241,7 +234,7 @@ export default class ProdcutsManager extends React.Component {
           onCancel={this.handleCloseProduct}
           footer={null}
         >
-          <ProductForm onSubmit={this.handleSubmitProduct}/>
+          <ProductForm product={this.product} onSubmit={this.handleSubmitProduct}/>
         </Modal>
         <Modal
           title="添加分类"

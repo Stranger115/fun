@@ -34,7 +34,7 @@ async def get_all_products(request):
 @product_bp.post('/api/v1/order/<user_id>')
 async def post_order(request, user_id):
     """提交商品订单"""
-    if request.json:
+    if not request.json:
         raise InvalidUsage('not json request!')
     product = request.json.get('product')
     num = request.json.get('num')
@@ -43,18 +43,23 @@ async def post_order(request, user_id):
     return json(jsonify({'id': order.inserted_id}))
 
 
-@product_bp.put('/api/v1/loadProduct/<name>')
-async def update_product(request, name):
+@product_bp.put('/api/v1/loadProduct')
+async def update_product(request):
     """商品上下架"""
+    if not request.json:
+        raise InvalidUsage('not json request!')
     flag = request.json.get('flag')
-    await Product.update_one({'name': name}, {'$set': {'flag': flag}})
-    return json(jsonify({'_id': id}))
+    name = request.json.get('name')
+    logging.info(flag)
+    result = await Product.update_one({'name': name}, {'$set': {'flag': flag}})
+    logging.info(result)
+    return json(jsonify({'_id': flag}))
 
 
-@product_bp.put('/api/v1/product/<id>')
-async def update_product(request, id):
+@product_bp.put('/api/v1/product')
+async def update_product(request):
     """商品更新"""
-    if request.json:
+    if not request.json:
         raise InvalidUsage('not json request!')
     name = request.json.get('name')
     stock = request.json.get('stock')
@@ -72,6 +77,15 @@ async def update_product(request, id):
          }
     )
     return json(jsonify({'id': product.inserted_id}))
+
+
+@product_bp.delete('/api/v1/product')
+async def delete_product(request):
+    if not request.json:
+        raise InvalidUsage('not json request!')
+    name = request.json.get('name')
+    await Product.delete_one({'name': name})
+    return json(jsonify({'name': name}))
 
 
 @product_bp.post('/api/v1/product')

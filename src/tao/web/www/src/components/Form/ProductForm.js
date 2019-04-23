@@ -115,7 +115,7 @@ export class ProductForm extends React.Component {
           })(
             <Select placeholder="请选择类型">
               {
-                this.labels.name(item=>(
+                this.labels.map(item=>(
                   <Option key={item._id} value={item._id}>{item.name}</Option>
                 ))
               }
