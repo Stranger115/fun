@@ -53,6 +53,7 @@ sudo pip3 install pytest -i https://pypi.douban.com/simple  # for unit test
 # UI dev
 cd src/tao/web/www
 npm install  # install UI dependencies
+npm run build
 ```
 
 ### Unit Test

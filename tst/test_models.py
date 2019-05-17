@@ -1,4 +1,4 @@
-from tao.models import BaseModel, Task
+from tao.models import BaseModel,AllUser
 from tao.utils import read_async_result, AIterList
 
 
@@ -19,4 +19,4 @@ class _MockCollection(object):
 
 def test_common_operations(monkeypatch):
     monkeypatch.setattr(BaseModel, '__db__', _MockDB())
-    read_async_result(Task.update_many({}, {'$set': {'done': True}}))
+    read_async_result(AllUser.update_many({}, {'$set': {'done': True}}))

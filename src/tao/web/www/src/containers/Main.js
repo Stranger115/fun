@@ -21,7 +21,7 @@ const SubMenu = Menu.SubMenu;
 @inject('sysStore', 'userActions', 'userStore')
 @observer
 class Main extends React.Component {
-  state = {version: undefined, user: undefined, role:0, visibleRegister:false, visibleLogin:false}
+  state = {version: undefined, user: undefined, role:0x01, visibleRegister:false, visibleLogin:false}
 
   async componentWillMount() {
     console.log(this.state.user)
@@ -148,7 +148,7 @@ class Main extends React.Component {
           >
             {
               Menus
-                .filter(item => item.inMenu && item.role<=this.state.role)
+                .filter(item => item.inMenu && (item.role&this.state.role)!==0)
                 .map((item) => {
                     let menu = this.GetMenu(item)
                     return menu
