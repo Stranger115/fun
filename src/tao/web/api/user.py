@@ -38,13 +38,6 @@ async def regedit(request):
             user.sex = sex
             user.role = 0xff
             await user.save()
-            # await AllUser.create('user',
-            #     {'user_name': user_name,
-            #      'password': secret,
-            #      'phone': phone,
-            #      'sex': sex,
-            #      'role': 0xff
-            #      })
             logging.info(result)
             return json(jsonify({'success': '注册成功'}))
         else:
