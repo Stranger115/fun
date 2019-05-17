@@ -15,8 +15,7 @@ export default class Store extends React.Component {
   constructor(props) {
     super(props)
     this.products = Products;
-    this.value = this.init();
-    this.state = { editVisible:false, editing_id: '', loading: true, data:this.value}
+    this.state = { editVisible:false, editing_id: '', loading: true, order:null,data:this.value}
     this.total = Products.length*4;
     this.limit = 4;
     this.page = 1;
@@ -33,10 +32,7 @@ export default class Store extends React.Component {
                     cover={<img src={ads}/>}
               >
                 <p>{e.title}</p>
-                <Button shape="circle" icon="minus" onClick={this.handleSub.bind(this, event, e.title)}/>
-                <strong>{this.state.data[e.title]}</strong>
-                <Button shape="circle" onClick={this.handleAdd.bind(this, event, e.title, e.value)} icon="plus"/>
-                <Button style={{float: 'right'}} shape="circle" icon="shopping-cart"/>
+                <Button style={{float: 'right'}} onClick={this.handleOrder} shape="circle" icon="shopping-cart"/>
               </Card>
             </span>
           )
@@ -55,30 +51,15 @@ export default class Store extends React.Component {
     }
     return value
   };
-  handleChange= (title, value)=>{
-    let count = this.state.data;
-    count[title] = value;
-    this.setState({data:count});
-    console.log(this.state.data)
-  };
-
-  handleAdd = (event,value, title) => {
-    let old = this.state.data[title];
-    if(old<value){
-      old ++;
-      this.handleChange(title, old)
+  handleOrder =()=>{
+    if(this.state.user ===0x01){
+      alert('请先登录再进行商品购买')
     }
     else{
-       alert('库存不足仅有%s件商品'%value)
+      return
     }
-  };
-  handleSub = (event, title)=>{
-    let value = this.state.data[title];
-    if(value>0){
-      value --;
-      this.handleChange(title, value)
-    }
-  };
+  }
+
   async loadStores() {
     console.log(1)
   }
