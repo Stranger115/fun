@@ -113,7 +113,7 @@ class RegistrationForm extends React.Component {
           )}
         </Form.Item>
         <Form.Item
-          label="Phone Number"
+          label="电话"
         >
           {getFieldDecorator('phone', {
             rules: [{ required: true, message: '请输入电话号码!' }],

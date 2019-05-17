@@ -5,6 +5,8 @@ import axios from 'axios'
 import { Input, Table, Icon, message, Popconfirm, Divider } from 'antd'
 import { EditableCell, EditableFormRow, EditableContext } from '../../components/Form/UserForm'
 import { DNSDialog } from "../../components/Dialog"
+import {LabelForm, RoleForm, UserForm} from "../../components/Form";
+import Modal from "antd/lib/modal";
 
 
 const { Search } = Input
@@ -12,7 +14,7 @@ const { Search } = Input
 export default class UserManager extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { editVisible:false, editing_id: '', loading: true}
+    this.state = { visibleRole:false, editVisible:false, editing_id: '', loading: true}
     this.total = 0
     this.limit = 10
     this.page = 1
@@ -33,7 +35,12 @@ export default class UserManager extends React.Component {
         )
       )},
       {title: '电话', width: '20%', align: 'center', dataIndex: 'username', editable: true, key: 'username'},
-      {title:'会员等级', width: '20%', align: 'center', dataIndex: 'role', editable: true, key: 'role'},
+      {title:(
+          <span>
+            <span>会员等级</span>
+            <a onClick={this.handleAddRole}><Icon  type="plus" /></a>
+          </span>
+        ), width: '20%', align: 'center', dataIndex: 'role', editable: true, key: 'role'},
       {
         title: (
           <span>
@@ -125,6 +132,14 @@ export default class UserManager extends React.Component {
   }
 
   isEditing = record => record._id === this.state.editing_id
+
+  handleAddRole = () =>{
+    this.setState({visibleRole:true})
+  }
+
+  handleCloseRole = () =>{
+    this.setState({visibleRole:false})
+  }
 
   cancel = () => {
     this.setState({ editing_id: '' })
@@ -266,7 +281,16 @@ export default class UserManager extends React.Component {
             }
           }
         />
+        <Modal
+          title="添加会员等级"
+          width={340}
+          visible={this.state.visibleRole}
+          onCancel={this.handleCloseRole}
+          footer={null}>
+          <LabelForm onSubmit={this.handleCloseRole}/>
+        </Modal>
       </div>
+
     )
   }}
 
