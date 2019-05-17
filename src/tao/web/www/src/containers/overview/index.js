@@ -5,6 +5,6 @@ import welcome from '../../static/welcome.png'
 
 export default class Overview extends React.Component {
   render() {
-    return <img src={welcome} height="735" width="137"/>
+    return <img src={welcome} width="735" height="137"/>
   }
 }

@@ -21,7 +21,7 @@ const SubMenu = Menu.SubMenu;
 @inject('sysStore', 'userActions', 'userStore')
 @observer
 class Main extends React.Component {
-  state = {version: undefined, user: undefined, role:0x01, visibleRegister:false, visibleLogin:false}
+  state = {version: undefined, user: undefined, role:0x00, visibleRegister:false, visibleLogin:false}
 
   async componentWillMount() {
     console.log(this.state.user)
