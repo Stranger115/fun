@@ -56,11 +56,16 @@ async def login(request):
     # 密码加密
     if result:
         secret = hash_psd(psd)
-        if result['password'][0] == secret:
-            return json(jsonify({'username': user_name, 'role': result.get('user_label', 0)}))
+        if result['password'] == secret:
+            return json(jsonify({'username': user_name, 'role': result.get('user_label', 0xff)}))
         else:
             raise InvalidUsage('密码或用户名错误')
     raise InvalidUsage('用户不存在')
+
+
+@user_bp.get('/api/v1/logout')
+async def logout(request):
+    return json(jsonify({'statute': '成功登出'}))
 
 
 @user_bp.post('api/v1/change_profile')
