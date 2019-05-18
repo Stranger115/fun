@@ -31,7 +31,7 @@ class Main extends React.Component {
     this.setState({ visibleLogin:true})
   }
   handleRegisterOn = (e) => {
-    this.setState({ visibleRegister:true})
+    this.setState({ visibleRegister:true, visibleLogin:false})
   }
   handleLoginOFF= (e) => {
     this.setState({ visibleLogin:false})
@@ -43,27 +43,21 @@ class Main extends React.Component {
   handleRegisterSuccess = (e) => {
     this.setState({ visibleRegister:false, visibleLogin:true})
   }
-  handleSubmitLogin = (e) => {
-    axios.get('/api/v1/login')
-      .then(() => {
-        message.success('登录成功')
-        window.location = '/'
-        this.handleLoginOFF()
-      })
-      .catch(err => {
-        message.error('logout失败')
-      })
-  }
 
   handleLogin = (e) => {
     console.log(e)
-    this.setState({ user: e ,  role:e.role, visibleLogin:false})
+    this.setState({ user: e.username , role:e.role, visibleLogin:false})
+        console.log('---------')
+    console.log(this.state.user)
+    console.log(this.state.role)
+    console.log(0x04&this.state.role)
   }
 
   handleLogout = (e) => {
     axios.get('/api/v1/logout')
       .then(() => {
         message.success('已注销')
+        this.setState({'user': undefined, role:0x00})
         window.location = '/'
       })
       .catch(err => {
@@ -90,7 +84,7 @@ class Main extends React.Component {
               </Menu.Item>
             </Menu>
           }>
-            <a className="ant-dropdown-link" href="javascript:void(0)">{this.state.user.username}<Icon type="down" /></a>
+            <a className="ant-dropdown-link" href="javascript:void(0)">{this.state.user}<Icon type="down" /></a>
           </Dropdown>
     }
     return headers
@@ -134,8 +128,7 @@ class Main extends React.Component {
   render() {
 
     let headers = this.GetHeadder()
-    // let menu = this.GetSider()
-    // console.log(menu)
+
     return (
       <Layout>
         <Sider className={styles.Sider}>
@@ -147,6 +140,7 @@ class Main extends React.Component {
             selectedKeys={[this.props.location.pathname]}
           >
             {
+
               Menus
                 .filter(item => item.inMenu && (item.role&this.state.role)!==0)
                 .map((item) => {
@@ -168,7 +162,7 @@ class Main extends React.Component {
           onCancel={this.handleRegisterOut}
           footer={null}
           >
-          <RegistrationForm onSubmit={this.handleRegisterSuccess}/>
+          <RegistrationForm onSubmit={this.handleRegisterSuccess} register={this.handleRegisterOn}/>
           </Modal>
           <Modal
           title="登录"

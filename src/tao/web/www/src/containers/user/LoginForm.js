@@ -23,7 +23,6 @@ class LoginForm extends React.Component {
         console.log('Received values of form: ', values);
         axios.post('/api/v1/login', values)
         .then((value) => {
-          console.log(value.data)
           message.success('登录成功')
           this.props.onSubmit(value.data)
           // window.location = '/'
@@ -63,7 +62,7 @@ class LoginForm extends React.Component {
           <Button type="primary" htmlType="submit" className={style.login_form_button}>
             登录
           </Button>
-          Or <a onClick={this.handleRegister}>注册!</a>
+          Or <a onClick={this.props.register}>注册!</a>
         </Form.Item>
       </Form>
     );

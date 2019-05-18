@@ -85,7 +85,7 @@ function hasErrors(fieldsError) {
 }
 
 
-export class DNSForm extends React.Component {
+export class UserForm extends React.Component {
   componentDidMount() {
     // To disabled submit button at the beginning.
     this.props.form.validateFields()
@@ -104,50 +104,60 @@ export class DNSForm extends React.Component {
       getFieldDecorator, getFieldsError, getFieldError, isFieldTouched,
     } = this.props.form
 
+    const prefixSelector = getFieldDecorator('prefix', {
+      initialValue: '86',
+    })(
+      <Select style={{ width: 70 }}>
+        <Option value="86">+86</Option>
+        <Option value="87">+87</Option>
+      </Select>
+    );
+
     // Only show error after a field is touched.
-    const fqdnError = isFieldTouched('fqdn') && getFieldError('fqdn')
-    const ipError = isFieldTouched('ip') && getFieldError('ip')
-    const nettypeError = isFieldTouched('nettype') && getFieldError('nettype')
+    const usernameError = isFieldTouched('username') && getFieldError('username')
+    const sexError = isFieldTouched('sex') && getFieldError('sex')
+    const phoneError = isFieldTouched('phone') && getFieldError('phone')
+    const roleError = isFieldTouched('role') && getFieldError('role')
     return (
       <Form onSubmit={this.handleSubmit}>
         <Form.Item
           {...FormItemLayout}
-          validateStatus={fqdnError ? 'error' : ''}
-          help={fqdnError || ''}
-          label='域名'
+          validateStatus={usernameError ? 'error' : ''}
+          help={usernameError || ''}
+          label='用户名'
         >
-            {getFieldDecorator('fqdn', {
-            rules: [{ required: true, message: '请输入DNS!' }],
+            {getFieldDecorator('username', {
+            rules: [{ required: true, message: '请输入用户名!' }],
           })(
-              <Input placeholder="请输入DNS" />
+              <Input placeholder="请输入用户名" />
           )}
         </Form.Item>
         <Form.Item
           {...FormItemLayout}
-          validateStatus={ipError ? 'error' : ''}
-          help={ipError || ''}
-          label='IP地址'
+          validateStatus={sexError ? 'error' : ''}
+          help={sexError || ''}
+          label='sex'
         >
-          {getFieldDecorator('ip', {
-           rules: [{ required: true, message: '请输入IP!' }],
+          {getFieldDecorator('sex', {
+           rules: [{ required: true, message: '请选择性别!' }],
           })(
-            <Input placeholder="请输入IP" />
+            <Select placeholder="请选择性别">
+              <Option value="1">女</Option>
+              <Option value="2">男</Option>
+            </Select>
          )}
          </Form.Item>
         <Form.Item
           {...FormItemLayout}
-          validateStatus={nettypeError ? 'error' : ''}
-          help={nettypeError || ''}
-          label='网络类型'
+          validateStatus={phoneError ? 'error' : ''}
+          help={phoneError || ''}
+          label='电话'
         >
-          {getFieldDecorator('nettype', {
+          {getFieldDecorator('phone', {
             initialValue:'intranet',
-            rules: [{ required: true, whitespace: true,  message: '请输入IP!' }],
+            rules: [{ required: true,  message: '请输入电话!' }],
           })(
-            <Select placeholder="请选择配置类型">
-              <Option value="intranet">内网IP</Option>
-              <Option value="internet">外网IP</Option>
-            </Select>
+            <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
           )}
         </Form.Item>
         <Form.Item {...FormItemLayoutWithOutLabel}>
@@ -164,6 +174,6 @@ export class DNSForm extends React.Component {
   }
 }
 
-export default Form.create()(DNSForm)
+export default Form.create()(UserForm)
 
 
