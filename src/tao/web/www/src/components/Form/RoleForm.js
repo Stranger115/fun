@@ -8,6 +8,75 @@ import axios from "axios";
 
 const { TextArea } = Input;
 const Option = Select.Option
+const FormItem = Form.Item
+
+export const EditableContext = React.createContext()
+
+const EditableRow = ({ form, index, ...props }) => (
+  <EditableContext.Provider value={form}>
+    <tr {...props} />
+  </EditableContext.Provider>
+)
+
+
+export const EditableFormRow = Form.create()(EditableRow)
+
+export class EditableCell extends React.Component {
+  constructor(props) {
+    super(props)
+    this.role = null
+    }
+  getInput = () => {
+    const dataIndex = this.props.dataIndex
+    if  (dataIndex === 'permission' ){
+      return <Select
+              mode="multiple"
+              placeholder="请选择权限"
+              >
+                <Option key={0x01} value={0x01}>商品购买</Option>
+                <Option key={0x02} value={0x02}>账单管理</Option>
+                <Option key={0x04} value={0x04}>会员管理</Option>
+                <Option key={0x08} value={0x08}>权限管理</Option>
+                <Option key={0x10} value={0x10}>商品管理</Option>
+              </Select>
+    }
+
+    return <Input style={{ width: '70%' }} />
+  }
+  render() {
+    const {
+      editing,
+      dataIndex,
+      title,
+      inputType,
+      record,
+      index,
+      ...restProps
+    } = this.props
+    return (
+      <EditableContext.Consumer>
+        {(form) => {
+          const { getFieldDecorator } = form
+          return (
+            <td {...restProps}>
+              {(editing && record['level']!==0)? (
+                <FormItem style={{ margin: 0 }}>
+                  {getFieldDecorator(dataIndex, {
+                    rules: [{
+                      required: true,
+                      message: `请输入 ${title}!`,
+                    }],
+                    initialValue: record[dataIndex],
+                  })(this.getInput())}
+                </FormItem>
+              ) : restProps.children}
+            </td>
+          )
+        }}
+      </EditableContext.Consumer>
+    )
+  }
+}
 
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field])

@@ -2,9 +2,10 @@
 
 import React from 'react'
 import axios from 'axios'
-import { Input, Table, Icon, message, Popconfirm, Divider } from 'antd'
-import { EditableCell, EditableFormRow, EditableContext } from '../../components/Form/UserForm'
+import { Input, Table, Icon, message, Popconfirm, Divider , Tag} from 'antd'
+import { EditableCell, EditableFormRow, EditableContext } from '../../components/Form/RoleForm'
 import {RoleForm} from "../../components/Form";
+import {Permission} from "../../externals";
 import Modal from "antd/lib/modal";
 
 
@@ -21,15 +22,19 @@ export default class RoleManager extends React.Component {
     this.roles = []
     this.qs = undefined
     this.columns = [
-      {title: '角色名', width: '30%', align: 'center', dataIndex: 'username', editable: false, key: 'username'},
-      {title: '级别', width: '10%', align: 'center', dataIndex: 'level', editable: true, key: 'level',render: text => (
+      {title: '角色名', width: '30%', align: 'center', dataIndex: 'role', editable: false, key: 'role'},
+      {title: '级别', width: '10%', align: 'center', dataIndex: 'level', editable: false, key: 'level',render: text => (
         text === 0? (
           <span>会员</span>
         ): (
          <span>管理员</span>
         )
       )},
-      {title: '权限设置', width: '20%', align: 'center', dataIndex: 'permission', editable: true, key: 'permission'},
+      {title: '权限设置', width: '20%', align: 'center', dataIndex: 'permission', editable: true, key: 'permission', render: text => (
+        text.map(item =>(
+          <Tag key={item}>{item}</Tag>
+        ))
+        )},
       {title: (
         <a href='javascript:void(0)' onClick={this.handAdd}><Icon type='plus' /></a>
         ),
@@ -186,7 +191,7 @@ export default class RoleManager extends React.Component {
         ...col,
         onCell: record => ({
           record,
-          // inputType: col.dataIndex === 'nettype' ? 'select' : 'text',
+          inputType: col.dataIndex === ('level'|'permission')? 'select' : 'text',
           dataIndex: col.dataIndex,
           title: col.title,
           editing: this.isEditing(record),
@@ -214,6 +219,7 @@ export default class RoleManager extends React.Component {
               this.page = page,
                 this.total = pageSize,
                 await this.getRole(),
+                console.log(this.roles)
                 this.setState({loading: false})
             }
           }}
