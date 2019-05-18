@@ -23,22 +23,20 @@ async def change_user(request):
 
 @role_bp.post('api/v1/add_role')
 async def add_role(request):
-    pass
+    """添加会员等级"""
+    role = request.args.get('role')
+    des = request.args.get('description')
+    result = await Permission.find_one({'role':role})
+    if not result:
+        await Permission.create(role, des)
+        return json(jsonify({'success': 1}))
+    return InvalidUsage('会员等级已存在')
 
 
 @role_bp.get('api/v1/roles')
 async def get_roles(request):
-    skip = int(request.args.get('skip', 0))
-    limit = int(request.args.get('limit', 10))
-    filter_ = {}
-    q_ = request.args.get('q')
-    if q_:
-        filter_['$or'] = [
-            {'fqdn': {'$regex': '(?i)' + q_}},
-            {'ip': {'$regex': q_}}]
     return json(jsonify({
-        'total': await Permission.count_documents(filter_),
+        'total': await Permission.count_documents(),
         'role': [record async for record in
-                Permission.find(filter_, skip=skip,
-                         limit=limit)]}))
+                Permission.find({})]}))
 

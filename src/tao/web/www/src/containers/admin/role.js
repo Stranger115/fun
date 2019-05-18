@@ -4,7 +4,8 @@ import React from 'react'
 import axios from 'axios'
 import { Input, Table, Icon, message, Popconfirm, Divider } from 'antd'
 import { EditableCell, EditableFormRow, EditableContext } from '../../components/Form/UserForm'
-import { DNSDialog } from "../../components/Dialog"
+import {RoleForm} from "../../components/Form";
+import Modal from "antd/lib/modal";
 
 
 const { Search } = Input
@@ -21,7 +22,7 @@ export default class RoleManager extends React.Component {
     this.qs = undefined
     this.columns = [
       {title: '角色名', width: '30%', align: 'center', dataIndex: 'username', editable: false, key: 'username'},
-      {title: '级别', width: '10%', align: 'center', dataIndex: 'sex', editable: true, key: 'sex',render: text => (
+      {title: '级别', width: '10%', align: 'center', dataIndex: 'level', editable: true, key: 'level',render: text => (
         text === 0? (
           <span>会员</span>
         ): (
@@ -72,14 +73,7 @@ export default class RoleManager extends React.Component {
   }
 
   getRole = async () => {
-    let params = {
-      skip: (this.page - 1) * this.limit,
-      limit: this.limit,
-    }
-    if (this.qs) {
-      params.q = this.qs
-    }
-    await axios.get('/api/v1/roles', {params})
+    await axios.get('/api/v1/roles')
       .then(resp => {
         this.total = resp.data.total
         this.roles = resp.data.roles
@@ -167,15 +161,12 @@ export default class RoleManager extends React.Component {
               })
   }
 
-  add = () =>{
+  handAdd = () =>{
     this.setState({editVisible: true})
   }
 
-  handleSearch = async (e) => {
-    this.qs = e || undefined
-    this.setState({loading: true})
-    await this.getRole()
-    this.setState({loading: false})
+  handSubmit = () =>{
+    this.setState({editVisible: false})
   }
 
   render() {
@@ -195,7 +186,7 @@ export default class RoleManager extends React.Component {
         ...col,
         onCell: record => ({
           record,
-          inputType: col.dataIndex === 'nettype' ? 'select' : 'text',
+          // inputType: col.dataIndex === 'nettype' ? 'select' : 'text',
           dataIndex: col.dataIndex,
           title: col.title,
           editing: this.isEditing(record),
@@ -227,25 +218,15 @@ export default class RoleManager extends React.Component {
             }
           }}
         />
-        <DNSDialog
-          dns={this.role}
+        <Modal
+          title="添加角色"
+          width={340}
           visible={this.state.editVisible}
-          onSubmit={
-            () => {
-              this.getRole().then(async () => {
-                this.setState({editVisible: false})
-                await this.getRole(),
-                this.setState({loading: false})
-              })
-            }
-          }
-          onClose={
-            () => {
-              this.role = null
-              this.setState({editVisible: false})
-            }
-          }
-        />
+          onCancel={this.handAdd}
+          footer={null}
+        >
+          <RoleForm onSubmit={this.handSubmit}/>
+        </Modal>
       </div>
     )
   }}
