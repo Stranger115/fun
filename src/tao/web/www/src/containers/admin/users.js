@@ -34,7 +34,7 @@ export default class UserManager extends React.Component {
           </div>
         )
       )},
-      {title: '电话', width: '20%', align: 'center', dataIndex: 'username', editable: true, key: 'username'},
+      {title: '电话', width: '20%', align: 'center', dataIndex: 'role', editable: true, key: 'role'},
       {title:(
           <span>
             <span>会员等级</span>

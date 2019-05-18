@@ -29,9 +29,8 @@ async def add_role(request):
     role = request.json.get('role')
     des = request.json.get('description')
     level = request.json.get('level')
-    per = request.json.get('permission', [])
-    logging.info(f'------{role}的功能权限列表:{per}------')
-    permission = reduce(lambda x, y: x+y, per) if level == 1 else 0x03
+    permission = request.json.get('permission', [])
+    logging.info(f'------{role}的功能权限列表:{permission}------')
 
     result = await Permission.find_one({'role': role})
     if not result:

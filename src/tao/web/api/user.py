@@ -6,6 +6,7 @@ from sanic.exceptions import InvalidUsage, ServerError
 from tao.models import AllUser, Permission
 from tao.utils import jsonify
 from bson import ObjectId
+from functools import reduce
 
 
 user_bp = Blueprint('users')
@@ -36,7 +37,8 @@ async def regedit(request):
             user.password = secret
             user.phone = phone
             user.sex = sex
-            user.role = 0xff
+            role = await Permission.find_one({'order': 0})
+            user.user_label = role['_id']
             await user.save()
             logging.info(result)
             return json(jsonify({'success': '注册成功'}))
@@ -56,8 +58,11 @@ async def login(request):
     # 密码加密
     if result:
         secret = hash_psd(psd)
+        user_label = result.get('user_label', 0xff)
+        role = await Permission.find_one({'_id': user_label})
         if result['password'] == secret:
-            return json(jsonify({'username': user_name, 'role': result.get('user_label', 0xff)}))
+            logging.info(role.get('permission', 0xff))
+            return json(jsonify({'username': user_name, 'role': reduce(lambda x,y:x+y, role.get('permission', 0xff))}))
         else:
             raise InvalidUsage('密码或用户名错误')
     raise InvalidUsage('用户不存在')
@@ -78,17 +83,20 @@ async def get_user(request):
     result = [user async for user in AllUser.find({})]
     users = []
     for record in result:
-        role = record.get('user_label', 0)
-        role_des = await Permission.find_one({'role': role})
-        user = {
-            '_id':record.get('_id', None),
-            'username': record.get('user_name', '未命名'),
-            'phone': record.get('phone', ''),
-            'role':  '普通会员',
-            'sex': record.get('sex', 1)
-        }
-        users.append(user)
-    return json(jsonify({'users': users, 'total': await AllUser.count_documents({})}))
+        role_id = record.get('user_label', 0)
+        role = await Permission.find_one({'_id': role_id})
+        role_sum = reduce(lambda x,y:x+y, role['permission'])
+        if role_sum == 3:
+            user = {
+                '_id': record.get('_id', None),
+                'username': record.get('user_name', '未命名'),
+                'phone': record.get('phone', ''),
+                'role':  role.get('role', ''),
+                'sex': record.get('sex', 1)
+            }
+            users.append(user)
+
+    return json(jsonify({'users': users, 'total': len(users)}))
 
 
 @user_bp.put('api/v1/user')
