@@ -31,7 +31,7 @@ export default class RoleManager extends React.Component {
       )},
       {title: '权限设置', width: '20%', align: 'center', dataIndex: 'permission', editable: true, key: 'permission'},
       {title: (
-        <a href='javascript:void(0)' onClick={this.add}><Icon type='plus' /></a>
+        <a href='javascript:void(0)' onClick={this.handAdd}><Icon type='plus' /></a>
         ),
         width: '20%', align: 'center',
         dataIndex: '_add',
@@ -222,7 +222,7 @@ export default class RoleManager extends React.Component {
           title="添加角色"
           width={340}
           visible={this.state.editVisible}
-          onCancel={this.handAdd}
+          onCancel={this.handSubmit}
           footer={null}
         >
           <RoleForm onSubmit={this.handSubmit}/>

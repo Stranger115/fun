@@ -18,6 +18,7 @@ export class RoleForm extends React.Component {
   constructor(props) {
     super(props)
     this.roles = null
+    this.state = {value:undefined}
   }
   componentDidMount() {
     // To disabled submit button at the beginning.
@@ -29,6 +30,7 @@ export class RoleForm extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.props.onSubmit()
+        console.log(values)
         // edit
         axios.post('/api/v1/add_role', values)
           .then(resp => {
@@ -40,9 +42,13 @@ export class RoleForm extends React.Component {
       }
     })
   }
+  handChange = ()=>{
+    this.setState({value:this.props.form.getFieldValue('level')})
+    console.log(this.state.value)
+  }
   render() {
     const {
-      getFieldDecorator, getFieldsError, getFieldError, isFieldTouched,getFieldsValue
+      getFieldDecorator, getFieldsError, getFieldError, isFieldTouched
     } = this.props.form
 
     // Only show error after a field is touched.
@@ -73,7 +79,7 @@ export class RoleForm extends React.Component {
             {getFieldDecorator('level', {
             rules: [{ required: true, message: '请选择角色级别!' }],
           })(
-              <Select placeholder="请选择类型" >
+              <Select placeholder="请选择类型" onChange={this.handChange}>
                 <Option key={0} value={0}>会员</Option>
                 <Option key={1} value={1}>管理员</Option>
               </Select>
@@ -92,11 +98,11 @@ export class RoleForm extends React.Component {
           )}
         </Form.Item>
         {
-          getFieldsValue('level')===1?(
+          this.state.value===0?(
           <Form.Item
             {...FormItemLayout}
-            validateStatus={descriptionError ? 'error' : ''}
-            help={descriptionError || ''}
+            validateStatus={permissionError ? 'error' : ''}
+            help={permissionError || ''}
             label='权限'
           >
             {getFieldDecorator('permission', {
@@ -104,7 +110,6 @@ export class RoleForm extends React.Component {
           })(<Select
               mode="multiple"
               placeholder="请选择权限"
-              disabled={true}
               defaultValue={[0x02, 0x01]}
               >
                 <Option key={0x01} value={0x01}>商品购买</Option>
@@ -115,27 +120,7 @@ export class RoleForm extends React.Component {
               </Select>
               )
             }
-
-          </Form.Item>):(<Form.Item
-            {...FormItemLayout}
-            validateStatus={descriptionError ? 'error' : ''}
-            help={descriptionError || ''}
-            label='权限'
-          >
-            {getFieldDecorator('permission', {
-            rules: [{ required: true, message: '请选择权限' }],
-          })(<Select
-              mode="multiple"
-              placeholder="请选择权限"
-              >
-                <Option key={0x01} value={0x01}>商品购买</Option>
-                <Option key={0x02} value={0x02}>账单管理</Option>
-                <Option key={0x04} value={0x04}>会员管理</Option>
-                <Option key={0x08} value={0x08}>权限管理</Option>
-                <Option key={0x10} value={0x10}>商品管理</Option>
-              </Select>)
-            }
-          </Form.Item>)
+          </Form.Item>):(<div> </div>)
           }
         <Form.Item {...FormItemLayoutWithOutLabel}>
           <Button

@@ -6,6 +6,7 @@
 import hashlib
 import logging
 from sanic import Blueprint
+from functools import reduce
 from sanic.response import json
 from sanic.exceptions import InvalidUsage, ServerError
 from tao.models import AllUser, Permission
@@ -24,11 +25,21 @@ async def change_user(request):
 @role_bp.post('api/v1/add_role')
 async def add_role(request):
     """添加会员等级"""
-    role = request.args.get('role')
-    des = request.args.get('description')
-    result = await Permission.find_one({'role':role})
+    role = request.json.get('role')
+    des = request.json.get('description')
+    level = request.json.get('level')
+    per = request.json.get('permission', [])
+    logging.info(f'------{role}的功能权限列表:{per}------')
+    permission = reduce(lambda x, y: x+y, per) if level == 1 else 0x03
+
+    result = await Permission.find_one({'role': role})
     if not result:
-        await Permission.create(role, des)
+        per = Permission()
+        per.role = role
+        per.description = des
+        per.permission = permission
+        per.order = 1
+        await per.save()
         return json(jsonify({'success': 1}))
     return InvalidUsage('会员等级已存在')
 
@@ -36,7 +47,7 @@ async def add_role(request):
 @role_bp.get('api/v1/roles')
 async def get_roles(request):
     return json(jsonify({
-        'total': await Permission.count_documents(),
+        'total': await Permission.count_documents({}),
         'role': [record async for record in
                 Permission.find({})]}))
 
