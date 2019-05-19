@@ -35,16 +35,10 @@ export default class UserManager extends React.Component {
         )
       )},
       {title: '电话', width: '20%', align: 'center', dataIndex: 'role', editable: true, key: 'role'},
-      {title:(
-          <span>
-            <span>会员等级</span>
-            <a onClick={this.handleAddRole}><Icon  type="plus" /></a>
-          </span>
-        ), width: '20%', align: 'center', dataIndex: 'role', editable: true, key: 'role'},
+      {title:'会员等级', width: '20%', align: 'center', dataIndex: 'role', editable: true, key: 'role'},
       {
         title: (
           <span>
-            <a href='javascript:void(0)' onClick={this.add}><Icon type='plus' /></a>
             <Search
               placeholder='输入昵称，会员等级进行筛选'
               onSearch={this.handleSearch}
@@ -262,33 +256,6 @@ export default class UserManager extends React.Component {
             }
           }}
         />
-        <DNSDialog
-          dns={this.user}
-          visible={this.state.editVisible}
-          onSubmit={
-            () => {
-              this.getUser().then(async () => {
-                this.setState({editVisible: false})
-                await this.getUser(),
-                this.setState({loading: false})
-              })
-            }
-          }
-          onClose={
-            () => {
-              this.user = null
-              this.setState({editVisible: false})
-            }
-          }
-        />
-        <Modal
-          title="添加会员等级"
-          width={340}
-          visible={this.state.visibleRole}
-          onCancel={this.handleCloseRole}
-          footer={null}>
-          <LabelForm onSubmit={this.handleCloseRole}/>
-        </Modal>
       </div>
 
     )

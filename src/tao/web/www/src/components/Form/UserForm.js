@@ -27,13 +27,15 @@ export class EditableCell extends React.Component {
     if (this.props.dataIndex === 'role'){
       axios.get('/api/v1/get_role')
       .then(resp => {
-         let role_des = resp.data.role
+         this.roles = resp.data.roles
          this.role = this.role.filter(item => item.level === 0)
-        })
+      })
       return <Select initialValue="1">
-               <Option value="1">女</Option>
-               <Option value="2">男</Option>
+              {
+                <Option value="1">女</Option>
+              }
              </Select>
+
     }
     else if (this.props.dataIndex === 'sex'){
       return <Select initialValue="1">
