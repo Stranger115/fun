@@ -2,7 +2,7 @@ import logging
 from sanic import Blueprint
 from sanic.response import json
 from sanic.exceptions import InvalidUsage, NotFound
-from tao.models.product import Product, Label, Order, ShoppingCart
+from tao.models.product import Product, Label, Order
 from tao.settings import PRODUCTS_LINE_LIMIT
 from tao.utils import jsonify
 from bson.objectid import ObjectId
@@ -14,11 +14,8 @@ product_bp = Blueprint('product')
 @product_bp.get('/api/v1/products')
 async def get_products(request):
     """获取商品列表"""
-    results = [record async for record in Product.find({})]
-    products = []
-    for i in range(0, len(results), PRODUCTS_LINE_LIMIT):
-        products.append(results[i:i + PRODUCTS_LINE_LIMIT])
-    return json(jsonify(products))
+    results = [record async for record in Product.find({'flag': True})]
+    return json(jsonify({'products': results, 'total': len(results)}))
 
 
 @product_bp.get('/api/v1/all_products')
@@ -39,9 +36,24 @@ async def post_order(request, user_id):
     product = request.json.get('product')
     num = request.json.get('num')
     user_id = user_id
-    order = await ShoppingCart.create(product, user_id, num)
+    order = await Order.create(product, user_id, num)
     return json(jsonify({'id': order.inserted_id}))
 
+
+@product_bp.get('/api/v1/user_orders')
+async def get_all_order(request):
+    """获取某个用户所有订单"""
+    user_id = request.json.get('id')
+    orders = [record async for record in Order.find({'id': ObjectId(user_id)})]
+    return json(jsonify({'products': orders, 'total': await Product.count_documents({})}))
+
+
+@product_bp.get('/api/v1/alll_orders')
+async def get_all_order(request):
+    """获取用户所有订单"""
+    user_id = request.json.get('id')
+    orders = [record async for record in Order.find({})]
+    return json(jsonify({'products': orders, 'total': await Product.count_documents({})}))
 
 @product_bp.put('/api/v1/loadProduct')
 async def update_product(request):

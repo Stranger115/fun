@@ -33,16 +33,16 @@ class Label(BaseModel):
             'update_time': get_timestamp()})
 
 
-class ShoppingCart(BaseModel):
-    __cname__ = 'shopping_cart'
-
-    @classmethod
-    async def create(cls, product, user_id, num):
-        return await cls.insert_one({
-            'product': product,
-            'user_id': user_id,
-            'num': num
-        })
+# class ShoppingCart(BaseModel):
+#     __cname__ = 'shopping_cart'
+#
+#     @classmethod
+#     async def create(cls, product, user_id, num):
+#         return await cls.insert_one({
+#             'product': product,
+#             'user_id': user_id,
+#             'num': num
+#         })
 
 
 class Order(BaseModel):
